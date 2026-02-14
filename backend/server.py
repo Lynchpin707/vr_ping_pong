@@ -2,12 +2,15 @@ import requests
 import time
 import socket
 import json
+import os
+from dotenv import load_dotenv
 
-PHYPHOX_URL = "http://192.168.100.200" # Your URL
-UDP_IP = "127.0.0.1"
-UDP_PORT = 5005
+load_dotenv()
 
-# Create UDP socket
+PHYPHOX_URL = os.getenv("PHYPHOX_URL") 
+UDP_IP = os.getenv("UDP_IP") 
+UDP_PORT = int(os.getenv("UDP_PORT") )
+
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 def stream_sensor_data():
@@ -16,11 +19,9 @@ def stream_sensor_data():
     
     try:
         while True:
-            # Added a 2-second timeout so it doesn't hang indefinitely
             response = requests.get(f"{PHYPHOX_URL}/get?gyrX&gyrY&gyrZ", timeout=2)
             data = response.json()
-            
-            # DEBUG: Print the raw dictionary to see the exact structure
+
             print("RAW DATA:", data) 
             
             if 'buffer' in data:
