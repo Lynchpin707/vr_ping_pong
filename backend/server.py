@@ -24,7 +24,7 @@ def stream_sensor_data():
             if 'buffer' in data:
                 buf = data['buffer']
                 
-                # Get the last value of each buffer (defaulting to 0 if empty)
+
                 y = buf.get('gyrX', {}).get('buffer', [0])[-1]
                 z = buf.get('gyrY', {}).get('buffer', [0])[-1]
                 x = buf.get('gyrZ', {}).get('buffer', [0])[-1]
