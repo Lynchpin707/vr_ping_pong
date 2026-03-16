@@ -6,11 +6,18 @@ import select
 cont = bge.logic.getCurrentController()
 racket = cont.owner
 
+if 'config' not in bge.logic.globalDict:
+    config_path = bge.logic.expandPath('//config.json')
+    with open(config_path, 'r') as f:
+        bge.logic.globalDict['config'] = json.load(f)
+
+cfg = bge.logic.globalDict['config']
+
 
 if 'udp' not in bge.logic.globalDict:
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    sock.bind(('0.0.0.0', 5005))
+    sock.bind((cfg['network']['host'], cfg['network']['port']))
     sock.setblocking(False)
     bge.logic.globalDict['udp'] = sock
     bge.logic.globalDict['vx'] = 0.0
@@ -20,9 +27,9 @@ sock = bge.logic.globalDict['udp']
 ready = select.select([sock], [], [], 0.0)
 
 pos = racket.worldPosition.copy() 
-move_speed = 0.15  
-friction = 0.7    
-deadzone = 0.15     
+move_speed = cfg['physics']['move_speed']
+friction = cfg['physics']['friction']
+deadzone = cfg['physics']['deadzone']
 
 if ready[0]:
     try:
@@ -31,40 +38,36 @@ if ready[0]:
         
         rx, ry, rz = sensor.get('x', 0), sensor.get('y', 0), sensor.get('z', 0)
         racket.applyRotation([rx * 0.05, ry * 0.05, rz * 0.05], True)
-
-        # 2. MOVEMENT (Acceleration -> Velocity)
+        
         ax = sensor.get('ax', 0)
         ay = sensor.get('ay', 0)
         
-        # Apply deadzone
         if abs(ax) < deadzone: ax = 0
         if abs(ay) < deadzone: ay = 0
         
-        # Accumulate velocity
         bge.logic.globalDict['vx'] += ax * move_speed
         bge.logic.globalDict['vy'] += -ay * move_speed
 
     except Exception:
         pass
 
-# Apply friction to gradually stop the racket
 bge.logic.globalDict['vx'] *= friction
 bge.logic.globalDict['vy'] *= friction
 
-# Apply velocity to position
 pos.x += bge.logic.globalDict['vx']
 pos.y += bge.logic.globalDict['vy']
 
-# 3. CLAMP LIMITS & KILL VELOCITY ON IMPACT
-if pos.y > 2.0 or pos.y < -2.0:
+x_min, x_max = cfg['limits']['x_min'], cfg['limits']['x_max']
+y_min, y_max = cfg['limits']['y_min'], cfg['limits']['y_max']
+
+if pos.y > y_max or pos.y < y_min:
     bge.logic.globalDict['vy'] = 0.0
-pos.y = max(-2.0, min(2.0, pos.y))
+pos.y = max(y_min, min(y_max, pos.y))
 
-if pos.x > 0.0 or pos.x < -2.0:
+if pos.x > x_max or pos.x < x_min:
     bge.logic.globalDict['vx'] = 0.0
-pos.x = max(-2.0, min(2.0, pos.x))
+pos.x = max(x_min, min(x_max, pos.x))
 
-pos.z = 1.0  
+pos.z = cfg['limits']['z_lock']
 
 racket.worldPosition = pos
-
