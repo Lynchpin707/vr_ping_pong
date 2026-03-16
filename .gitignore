@@ -2,3 +2,4 @@
 .env
 docs/diagrams/*.drawio
 .DS_Store
+*.blend1
