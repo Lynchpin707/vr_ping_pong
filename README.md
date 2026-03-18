@@ -1,4 +1,10 @@
-# Virtual Reality Ping Pong game
+# Invincible : Virtual Reality Ping Pong game
+
+<div align="center">
+	<img width="170" src="docs/logo.jpeg" alt="Hadoop">
+</div>
+
+
 A 3D ping-pong game built with Blender and Python, controlled entirely by smartphone motion sensors (accelerometer and gyroscope) via a local UDP connection. [AI opponent in the making]
 
 ### High-level Architecture 
@@ -21,3 +27,5 @@ NB : PhyPhox changes the URL frequently. Make sure you have the correct URL.
 ### Meet the team
 
 We are GuardiansOfTheGlobe, 4 Data engineering students @Ensias. 
+
+Are you ready to become INVINCIBLE in PingPong ? 
