@@ -1,18 +1,18 @@
 {
-    "network": {
-        "host": "0.0.0.0",
-        "port": 5005
-    },
-    "physics": {
-        "move_speed": 0.15,
-        "friction": 0.7,
-        "deadzone": 0.15
-    },
-    "limits": {
-        "x_min": -2.0,
-        "x_max": 2.0,
-        "y_min": -2.0,
-        "y_max": 2.0,
-        "z_lock": 1.0
-    }
-}
+  "network": {
+    "host": "0.0.0.0",
+    "port": 5005
+  },
+  "physics": {
+    "move_speed": 0.15,
+    "friction": 0.7,
+    "deadzone": 0.10
+  },
+  "limits": {
+    "x_min": -20.0,
+    "x_max": 20.0,
+    "y_min": -20.0,
+    "y_max": 20.0,
+    "z_lock": 1
+  }
+} 
